@@ -4,6 +4,10 @@ var FPS = 60;
 
 var images = {};
 
+var speed = function(fps){
+	FPS = parseInt(fps);
+}
+
 var loadImages = function(sources, callback){
 	var nb = 0;
 	var loaded = 0;
