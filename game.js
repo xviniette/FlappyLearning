@@ -253,10 +253,10 @@ Game.prototype.display = function(){
 
 window.onload = function(){
 	var sprites = {
-		bird:"bird.png",
-		background:"background.png",
-		pipetop:"pipetop.png",
-		pipebottom:"pipebottom.png"
+		bird:"./img/bird.png",
+		background:"./img/background.png",
+		pipetop:"./img/pipetop.png",
+		pipebottom:"./img/pipebottom.png"
 	}
 
 	var start = function(){
