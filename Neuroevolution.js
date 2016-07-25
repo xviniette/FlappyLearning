@@ -15,7 +15,9 @@ var Neuroevolution = function(options){
 		mutationRange:0.5,
 		network:[1, [1], 1],
 		historic:0,
-		scoreSort:-1
+		lowHistoric:false,
+		scoreSort:-1,
+		nbChild:1
 	}
 
 	self.set = function(options){
@@ -210,10 +212,12 @@ var Neuroevolution = function(options){
 		var max = 0;
 		while(true){
 			for(var i = 0; i < max; i++){
-				var childs = this.breed(this.genomes[i], this.genomes[max], 1);
-				nexts.push(childs[0].network);
-				if(nexts.length >= self.options.population){
-					return nexts;
+				var childs = this.breed(this.genomes[i], this.genomes[max], (self.options.nbChild > 0 ? self.options.nbChild : 1) );
+				for(var c in childs){
+					nexts.push(childs[c].network);
+					if(nexts.length >= self.options.population){
+						return nexts;
+					}
 				}
 			}
 			max++;
@@ -279,6 +283,16 @@ var Neuroevolution = function(options){
 			nn.setSave(networks[i]);  
 			nns.push(nn);
 		}
+
+		if(self.options.lowHistoric){
+			if(self.generations.generations.length >= 2){
+				var genomes = self.generations.generations[self.generations.generations.length  - 2].genomes;
+				for(var i in genomes){
+					delete genomes[i].network;
+				}
+			}
+		}
+
 		if(self.options.historic != -1){
 			if(self.generations.generations.length > self.options.historic + 1){
 				self.generations.generations.splice(0, self.generations.generations.length - (self.options.historic + 1));
@@ -287,7 +301,7 @@ var Neuroevolution = function(options){
 		return nns;
 	}
 
-	self.addNetwork = function(network, score){
+	self.networkScore = function(network, score){
 		self.generations.addGenome(new Genome(score, network.getSave()));
 	}
 }

@@ -160,7 +160,7 @@ Game.prototype.update = function(){
 				this.birds[i].alive = false;
 				this.alives--;
 				//console.log(this.alives);
-				Neuvol.addNetwork(this.gen[i], this.score);
+				Neuvol.networkScore(this.gen[i], this.score);
 				if(this.isItEnd()){
 					this.start();
 				}
@@ -262,7 +262,7 @@ window.onload = function(){
 	var start = function(){
 		Neuvol = new Neuroevolution({
 			population:50,
-			network:[2, [2], 1]
+			network:[2, [2], 1],
 		});
 		game = new Game();
 		game.start();
