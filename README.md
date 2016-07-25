@@ -5,7 +5,6 @@ Program that learns to play Flappy Bird by machine learning ([Neuroevolution](ht
 ![alt tag](https://github.com/xviniette/FlappyLearning/blob/gh-pages/img/flappy.png?raw=true)
 
 ### [NeuroEvolution.js](http://github.com/xviniette/FlappyLearning/blob/gh-pages/Neuroevolution.js) : Utilization
-
 ```javascript
 // Initialize
 var ne = new Neuroevolution({options});
