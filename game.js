@@ -221,9 +221,7 @@ Game.prototype.display = function(){
 	}
 
 
-	this.ctx.fillStyle = "#2F9A00";
 	for(var i in this.pipes){
-		this.ctx.fillRect(this.pipes[i].x, this.pipes[i].y, this.pipes[i].width, this.pipes[i].height);
 		if(i%2 == 0){
 			this.ctx.drawImage(images.pipetop, this.pipes[i].x, this.pipes[i].y + this.pipes[i].height - images.pipetop.height, this.pipes[i].width, images.pipetop.height);
 		}else{
