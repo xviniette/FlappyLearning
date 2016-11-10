@@ -1,6 +1,7 @@
 var Neuvol;
 var game;
 var FPS = 60;
+var maxScore=0;
 
 var images = {};
 
@@ -220,7 +221,6 @@ Game.prototype.display = function(){
 		this.ctx.drawImage(images.background, i * images.background.width - (this.backgroundx%images.background.width), 0)
 	}
 
-
 	for(var i in this.pipes){
 		if(i%2 == 0){
 			this.ctx.drawImage(images.pipetop, this.pipes[i].x, this.pipes[i].y + this.pipes[i].height - images.pipetop.height, this.pipes[i].width, images.pipetop.height);
@@ -245,8 +245,12 @@ Game.prototype.display = function(){
 	this.ctx.fillStyle = "white";
 	this.ctx.font="20px Oswald, sans-serif";
 	this.ctx.fillText("Score : "+this.score, 10, 25);
-	this.ctx.fillText("Generation : "+this.generation, 10, 50);
-	this.ctx.fillText("Alive : "+this.alives+" / "+Neuvol.options.population, 10, 75);
+    if (this.score > maxScore) {
+        maxScore = this.score;
+    }
+	this.ctx.fillText("Max Score : "+maxScore, 10, 50);
+	this.ctx.fillText("Generation : "+this.generation, 10, 75);
+	this.ctx.fillText("Alive : "+this.alives+" / "+Neuvol.options.population, 10, 100);
 }
 
 window.onload = function(){
