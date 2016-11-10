@@ -218,7 +218,7 @@ Game.prototype.isItEnd = function(){
 Game.prototype.display = function(){
 	this.ctx.clearRect(0, 0, this.width, this.height);
 	for(var i = 0; i < Math.ceil(this.width / images.background.width) + 1; i++){
-		this.ctx.drawImage(images.background, i * images.background.width - (this.backgroundx%images.background.width), 0)
+		this.ctx.drawImage(images.background, i * images.background.width - Math.floor(this.backgroundx%images.background.width), 0)
 	}
 
 	for(var i in this.pipes){
