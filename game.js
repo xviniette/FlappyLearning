@@ -112,14 +112,12 @@ var Game = function(){
 	this.generation = 0;
 	this.backgroundSpeed = 0.5;
 	this.backgroundx = 0;
-    this.pipeCount = 0;
     this.maxScore = 0;
 }
 
 Game.prototype.start = function(){
 	this.interval = 0;
 	this.score = 0;
-    this.pipeCount = 0;
 	this.pipes = [];
 	this.birds = [];
 
@@ -174,7 +172,6 @@ Game.prototype.update = function(){
 	for(var i in this.pipes){
 		this.pipes[i].update();
 		if(this.pipes[i].isOut()){
-            this.pipeCount++;
 			deletedPipes.push(i);
 		}
 	}
@@ -200,6 +197,7 @@ Game.prototype.update = function(){
 	}
 
 	this.score++;
+    this.maxScore = (this.score > this.maxScore) ? this.score : this.maxScore;
 	var self = this;
 	setTimeout(function(){
 		self.update();
@@ -244,14 +242,12 @@ Game.prototype.display = function(){
 		}
 	}
 
-    this.maxScore = (this.score > this.maxScore) ? this.score : this.maxScore;
 	this.ctx.fillStyle = "white";
 	this.ctx.font="20px Oswald, sans-serif";
-	this.ctx.fillText("Max Score : "+ this.maxScore, 10, 25);
-	this.ctx.fillText("Score : "+this.score, 10, 50);
+	this.ctx.fillText("Score : "+ this.score, 10, 25);
+	this.ctx.fillText("Max Score : "+this.maxScore, 10, 50);
 	this.ctx.fillText("Generation : "+this.generation, 10, 75);
 	this.ctx.fillText("Alive : "+this.alives+" / "+Neuvol.options.population, 10, 100);
-	this.ctx.fillText("Pipes Crossed : " + this.pipeCount/2, 10, 125);
 }
 
 window.onload = function(){
