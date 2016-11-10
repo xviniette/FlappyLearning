@@ -1,6 +1,7 @@
 var Neuvol;
 var game;
 var FPS = 60;
+var maxScore=0;
 
 var images = {};
 
@@ -96,7 +97,6 @@ Pipe.prototype.isOut = function(){
 	}
 }
 
-
 var Game = function(){
 	this.pipes = [];
 	this.birds = [];
@@ -112,11 +112,14 @@ var Game = function(){
 	this.generation = 0;
 	this.backgroundSpeed = 0.5;
 	this.backgroundx = 0;
+    this.pipeCount = 0;
+    this.maxScore = 0;
 }
 
 Game.prototype.start = function(){
 	this.interval = 0;
 	this.score = 0;
+    this.pipeCount = 0;
 	this.pipes = [];
 	this.birds = [];
 
@@ -154,7 +157,6 @@ Game.prototype.update = function(){
 				this.birds[i].flap();
 			}
 
-
 			this.birds[i].update();
 			if(this.birds[i].isDead(this.height, this.pipes)){
 				this.birds[i].alive = false;
@@ -172,6 +174,7 @@ Game.prototype.update = function(){
 	for(var i in this.pipes){
 		this.pipes[i].update();
 		if(this.pipes[i].isOut()){
+            this.pipeCount++;
 			deletedPipes.push(i);
 		}
 	}
@@ -220,7 +223,6 @@ Game.prototype.display = function(){
 		this.ctx.drawImage(images.background, i * images.background.width - (this.backgroundx%images.background.width), 0)
 	}
 
-
 	for(var i in this.pipes){
 		if(i%2 == 0){
 			this.ctx.drawImage(images.pipetop, this.pipes[i].x, this.pipes[i].y + this.pipes[i].height - images.pipetop.height, this.pipes[i].width, images.pipetop.height);
@@ -242,11 +244,14 @@ Game.prototype.display = function(){
 		}
 	}
 
+    this.maxScore = (this.score > this.maxScore) ? this.score : this.maxScore;
 	this.ctx.fillStyle = "white";
 	this.ctx.font="20px Oswald, sans-serif";
-	this.ctx.fillText("Score : "+this.score, 10, 25);
-	this.ctx.fillText("Generation : "+this.generation, 10, 50);
-	this.ctx.fillText("Alive : "+this.alives+" / "+Neuvol.options.population, 10, 75);
+	this.ctx.fillText("Max Score : "+ this.maxScore, 10, 25);
+	this.ctx.fillText("Score : "+this.score, 10, 50);
+	this.ctx.fillText("Generation : "+this.generation, 10, 75);
+	this.ctx.fillText("Alive : "+this.alives+" / "+Neuvol.options.population, 10, 100);
+	this.ctx.fillText("Pipes Crossed : " + this.pipeCount/2, 10, 125);
 }
 
 window.onload = function(){
