@@ -3,16 +3,22 @@
 <head>
 	<title>NeuroEvolution : Flappy Bird</title>
 	<link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<canvas id="flappy" width="500" height="512"></canvas> <br/>
-	<button onclick="speed(60)">x1</button> 
-	<button onclick="speed(120)">x2</button> 
-	<button onclick="speed(180)">x3</button> 
-	<button onclick="speed(300)">x5</button>
-	<button onclick="speed(600)">x10</button>
-	<br/>
-	<a href="http://github.com/xviniette/FlappyLearning">GitHub Repository</a>
+    <h1>Flappy Learning</h1>
+    <h4>Created by Vincent Bazia, Have a look at <a href="https://github.com/xviniette/FlappyLearning" target="_blank">GitHub Reository.</a></h4>
+    <div id="leftcolumn">
+        <canvas id="flappy" width="500" height="512"></canvas>
+    </div>
+    <div id="rightcolumn">
+        <button onclick="speed(60)">x1</button> 
+        <button onclick="speed(120)">x2</button> 
+        <button onclick="speed(180)">x3</button> 
+        <button onclick="speed(300)">x5</button>
+        <button onclick="speed(0)">MAX</button><br><br>
+        <iframe src="https://ghbtns.com/github-btn.html?user=xviniette&repo=FlappyLearning&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" ></iframe>
+    </div>
 	<script src = "Neuroevolution.js"></script>
 	<script src = "game.js"></script>
 </body>

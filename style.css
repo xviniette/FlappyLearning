@@ -1,0 +1,35 @@
+body{
+    padding-right: 10%;
+    padding-left: 10%;
+    background: #eee;
+}
+h1{
+    text-align: center;
+    font-family: Oswald, sans-serif;
+    font-weight: 600;
+}
+h4{
+    text-align: center;
+    font-weight: 500;
+}
+button {
+    background-color: white;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    font-family: Oswald, sans-serif;
+    color: black;
+    width: 50px;
+    height: 35px;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: grey;
+}
+#leftcolumn{
+    float: left;
+}
+#rightcolumn{
+    margin-left: 512px;
+}
