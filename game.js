@@ -260,7 +260,7 @@ Game.prototype.display = function(){
 			this.ctx.translate(this.birds[i].x, this.birds[i].y);
 			this.ctx.translate(this.birds[i].width/2, this.birds[i].height/2);
 			this.ctx.rotate(Math.PI/2 * this.birds[i].gravity/20);
-			this.ctx.drawImage(images.bird, -this.birds[i].width, -this.birds[i].height/2, this.birds[i].width, this.birds[i].height);
+			this.ctx.drawImage(images.bird, -this.birds[i].width/2, -this.birds[i].height/2, this.birds[i].width, this.birds[i].height);
 			this.ctx.restore();
 		}
 	}
