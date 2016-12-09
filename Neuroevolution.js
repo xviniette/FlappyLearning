@@ -177,9 +177,6 @@ var Neuroevolution = function(options){
 				if(Math.random() <= 0.5){
 					data.network.weights[i] = g2.network.weights[i];
 				}
-			}
-
-			for(var i in data.network.weights){
 				if(Math.random() <= self.options.mutationRate){
 					data.network.weights[i] += Math.random() * self.options.mutationRange * 2 - self.options.mutationRange;
 				}
