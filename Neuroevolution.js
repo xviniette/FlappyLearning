@@ -30,16 +30,21 @@ var Neuroevolution = function(options){
 		},
 
 		// various factors and parameters (along with default values).
-		population:50,        // population size
-		elitism:0.2,          // elitism factor
-		randomBehaviour:0.2,  // random behaviour factor
-		mutationRate:0.1,     // mutation rate
-		mutationRange:0.5,    // mutation range
-		network:[1, [1], 1],  // network architecture (1 unit hidden layer)
-		historic:0,           // historic factor
-		lowHistoric:false,    // low historic flag
-		scoreSort:-1,         // score sort value
-		nbChild:1             // number of children
+		network:[1, [1], 1],    // Perceptron network structure (1 hidden
+					// layer).
+		population:50,          // Population by generation.
+		elitism:0.2,            // Best networks kepts unchanged for the next
+				        // generation (rate).
+		randomBehaviour:0.2,    // New random networks for the next generation
+				        // (rate).
+		mutationRate:0.1,       // Mutation rate on the weights of synapses.
+		mutationRange:0.5,      // Interval of the mutation changes on the
+				        // synapse weight.
+		historic:0,             // Latest generations saved.
+		lowHistoric:false,      // Only save score (not the network).
+		scoreSort:-1,           // Sort order (-1 = desc, 1 = asc).
+		nbChild:1               // Number of children by breeding.
+
 	}
 
 	/**
@@ -298,11 +303,12 @@ var Neuroevolution = function(options){
     		// Locate position to insert Genome into.
     		// The gnomes should remain sorted.
 		for(var i = 0; i < this.genomes.length; i++){
-      			// Depending on if the sorting ascending or descending.
+      			// Sort in descending order.
 			if(self.options.scoreSort < 0){
 				if(genome.score > this.genomes[i].score){
 					break;
 				}
+			// Sort in ascending order.
 			}else{
 				if(genome.score < this.genomes[i].score){
 					break;
@@ -340,9 +346,9 @@ var Neuroevolution = function(options){
 			for(var i in data.network.weights){
 				if(Math.random() <= self.options.mutationRate){
 					data.network.weights[i] += Math.random()
-				   * self.options.mutationRange
-				   * 2
-				   - self.options.mutationRange;
+						* self.options.mutationRange
+				   		* 2
+				   		- self.options.mutationRange;
 				}
 			}
 			datas.push(data);
@@ -387,8 +393,8 @@ var Neuroevolution = function(options){
 				for(var c in childs){
 					nexts.push(childs[c].network);
 					if(nexts.length >= self.options.population){
-						// Return once number of children is equal to the population
-						// factor.
+						// Return once number of children is equal to the
+						// population by generatino value.
 						return nexts;
 					}
 				}
@@ -429,8 +435,9 @@ var Neuroevolution = function(options){
 		for(var i = 0; i < self.options.population; i++){
       			// Generate the Network and save it.
 			var nn = new Network();
-			nn.perceptronGeneration(self.options.network[0], self.options.network[1],
-                              self.options.network[2]);
+			nn.perceptronGeneration(self.options.network[0],
+						self.options.network[1],
+                              			self.options.network[2]);
 			out.push(nn.getSave());
 		}
 
@@ -510,7 +517,8 @@ var Neuroevolution = function(options){
       			// Remove old Networks.
 			if(self.generations.generations.length >= 2){
 				var genomes =
-					self.generations.generations[self.generations.generations.length - 2]
+					self.generations
+						.generations[self.generations.generations.length - 2]
               					.genomes;
 				for(var i in genomes){
 					delete genomes[i].network;
