@@ -44,6 +44,12 @@ var load = function(){
     game.start(true)
 }
 
+var reset = function(){
+    localStorage.removeItem(NameSpace)
+    Neuvol.restart()
+    game.start()
+}
+
 var loadLocalNetWork = function(){
     var network = JSON.parse(localStorage.getItem(NameSpace))
     return network
