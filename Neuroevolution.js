@@ -32,6 +32,7 @@ var Neuroevolution = function(options){
 		// various factors and parameters (along with default values).
 		network:[1, [1], 1],    // Perceptron network structure (1 hidden
 					// layer).
+        loadLocalNetWork: function () {}, // load user defined network
 		population:50,          // Population by generation.
 		elitism:0.2,            // Best networks kepts unchanged for the next
 				        // generation (rate).
@@ -294,6 +295,16 @@ var Neuroevolution = function(options){
 	}
 
 	/**
+	 * get genome network by index.
+	 *
+	 * @return genome network.
+	 */
+	Generation.prototype.getNetwork = function(index){
+        var genome = this.genomes[index] || null
+        return genome && genome.network
+	}
+
+	/**
 	 * Add a genome to the generation.
 	 *
 	 * @param {genome} Genome to add.
@@ -421,6 +432,24 @@ var Neuroevolution = function(options){
 	}
 
 	/**
+	 * Load generation.
+	 *
+	 * @param {network} flat network.
+	 * @return Generation.
+	 */
+	Generations.prototype.loadGeneration = function(network){
+        if (!network) return null
+
+		var out = [];
+		for(var i = 0; i < self.options.population; i++){
+			out.push(network);
+		}
+
+		this.generations.push(new Generation());
+		return out;
+	}
+
+	/**
 	 * Create the first generation.
 	 *
 	 * @param {input} Input layer.
@@ -463,6 +492,17 @@ var Neuroevolution = function(options){
 	}
 
 	/**
+	 * get genome network by index.
+	 *
+	 * @return genome network.
+	 */
+	Generations.prototype.getNetwork = function(index){
+        // Can't get from a Generation if there are no Generations.
+		if(this.generations.length == 0) return null;
+		return this.generations[this.generations.length - 1].getNetwork(index);
+	}
+
+	/**
 	 * Add a genome to the Generations.
 	 *
 	 * @param {genome}
@@ -494,10 +534,14 @@ var Neuroevolution = function(options){
 	 *
 	 * @return Neural Network array for next Generation.
 	 */
-	self.nextGeneration = function(){
+	self.nextGeneration = function(shouldLoadLocalNetwork){
 		var networks = [];
 
-		if(self.generations.generations.length == 0){
+        if (shouldLoadLocalNetwork) {
+            var network = self.options.loadLocalNetWork()
+            if (!network) return self.nextGeneration()
+            networks = self.generations.loadGeneration(network)
+        } else if(self.generations.generations.length == 0){
       			// If no Generations, create first.
 			networks = self.generations.firstGeneration();
 		}else{
@@ -546,5 +590,16 @@ var Neuroevolution = function(options){
 	 */
 	self.networkScore = function(network, score){
 		self.generations.addGenome(new Genome(score, network.getSave()));
+	}
+
+	/**
+	 * get zero index network.
+	 *
+	 * @param {index} index of gnome.
+	 * @return flat network.
+	 */
+	self.getNetwork = function(index){
+        if (index === undefined) index = 0;
+		return self.generations.getNetwork(index);
 	}
 }

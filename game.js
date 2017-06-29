@@ -33,6 +33,22 @@ var speed = function(fps){
 	FPS = parseInt(fps);
 }
 
+var NameSpace = 'FlappyLearning'
+
+var save = function(){
+    var network = Neuvol.getNetwork()
+    if (network) localStorage.setItem(NameSpace, JSON.stringify(network))
+}
+
+var load = function(){
+    game.start(true)
+}
+
+var loadLocalNetWork = function(){
+    var network = JSON.parse(localStorage.getItem(NameSpace))
+    return network
+}
+
 var loadImages = function(sources, callback){
 	var nb = 0;
 	var loaded = 0;
@@ -86,7 +102,7 @@ Bird.prototype.isDead = function(height, pipes){
 	for(var i in pipes){
 		if(!(
 			this.x > pipes[i].x + pipes[i].width ||
-			this.x + this.width < pipes[i].x || 
+			this.x + this.width < pipes[i].x ||
 			this.y > pipes[i].y + pipes[i].height ||
 			this.y + this.height < pipes[i].y
 			)){
@@ -139,13 +155,12 @@ var Game = function(){
 	this.maxScore = 0;
 }
 
-Game.prototype.start = function(){
+Game.prototype.start = function(shouldLoadLocalNetwork){
 	this.interval = 0;
 	this.score = 0;
 	this.pipes = [];
 	this.birds = [];
-
-	this.gen = Neuvol.nextGeneration();
+	this.gen = Neuvol.nextGeneration(shouldLoadLocalNetwork);
 	for(var i in this.gen){
 		var b = new Bird();
 		this.birds.push(b)
@@ -256,7 +271,7 @@ Game.prototype.display = function(){
 	this.ctx.strokeStyle = "#CE9E00";
 	for(var i in this.birds){
 		if(this.birds[i].alive){
-			this.ctx.save(); 
+			this.ctx.save();
 			this.ctx.translate(this.birds[i].x + this.birds[i].width/2, this.birds[i].y + this.birds[i].height/2);
 			this.ctx.rotate(Math.PI/2 * this.birds[i].gravity/20);
 			this.ctx.drawImage(images.bird, -this.birds[i].width/2, -this.birds[i].height/2, this.birds[i].width, this.birds[i].height);
@@ -289,9 +304,10 @@ window.onload = function(){
 		Neuvol = new Neuroevolution({
 			population:50,
 			network:[2, [2], 1],
+            loadLocalNetWork: loadLocalNetWork,
 		});
 		game = new Game();
-		game.start();
+		game.start(true);
 		game.update();
 		game.display();
 	}
