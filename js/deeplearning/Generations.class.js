@@ -27,10 +27,14 @@ class Generations {
 
             for (var i = 0; i < this.geneticDeep.options.population; i++) {
                 // Generate the Network and save it in array.
-                out.push(new Network(this.geneticDeep).perceptronGeneration(
+                var network = new Network(this.geneticDeep).perceptronGeneration(
                     this.geneticDeep.options.network[0],
                     this.geneticDeep.options.network[1],
-                    this.geneticDeep.options.network[2]));
+                    this.geneticDeep.options.network[2]);
+
+                out.push(network);
+
+                //console.log(i, out[i].layers[0].neurons[0]);
             }
         }
 

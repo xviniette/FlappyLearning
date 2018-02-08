@@ -75,7 +75,7 @@ class Network {
             var sum;
 
             for (var x = 1; x < this.layers.length; x++) { //exploring hidden and output layers (which have connections)
-                for (var y = 0; i < this.layers[x].neurons.length; y++) { //exploring neurons of each layer
+                for (var y = 0; y < this.layers[x].neurons.length; y++) { //exploring neurons of each layer
                     sum = 0; //we make the sum of the product input and weight which will be the neuron value
 
                     for (var z = 0; z < prevLayer.neurons.length; z++) {
@@ -98,6 +98,8 @@ class Network {
             for (var j = 0; j < lastLayer.neurons.length; j++) {
                 out.push(lastLayer.neurons[j].value);
             }
+
+            //console.log('out', out);
 
             return out;
         }
@@ -177,7 +179,8 @@ Network.Layer.Neuron = class {
     populate(nb, randomMethod) {
         this.weights = [];
         for (var i = 0; i < nb; i++) {
-            this.weights.push(randomMethod());
+            //console.log(Math.random() * 2 - 1);
+            this.weights.push(randomMethod()/*Math.random() * 2 - 1*/);
         }
     };
 };

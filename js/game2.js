@@ -299,10 +299,20 @@ window.onload = function(){
 
     }
 
-
     loadImages(sprites, function(imgs){
         images = imgs;
         start();
     })
 
+    /*
+    Neuvol = new GeneticDeep({
+        population:50,
+        network:[2, [2], 1],
+    });
+
+    var network1 = new Network(Neuvol).perceptronGeneration(1, [1], 1);
+    var network2 = new Network(Neuvol).perceptronGeneration(1, [1], 1);
+
+    console.log(network1, network2);
+    */
 }
