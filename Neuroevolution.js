@@ -2,7 +2,7 @@
  * Provides a set of classes and methods for handling Neuroevolution and
  * genetic algorithms.
  *
- * @param {options} An object of options for Neuroevolution.
+ * @param options An object of options for Neuroevolution.
  */
 var Neuroevolution = function (options) {
 	var self = this; // reference to the top scope of this module
@@ -12,18 +12,17 @@ var Neuroevolution = function (options) {
 		/**
 		 * Logistic activation function.
 		 *
-		 * @param {a} Input value.
-		 * @return Logistic function output.
+		 * @param a Input value.
+		 * @return number Logistic function output.
 		 */
 		activation: function (a) {
-			ap = (-a) / 1;
-			return (1 / (1 + Math.exp(ap)))
+			return (1 / (1 + Math.exp(-a)))
 		},
 
 		/**
 		 * Returns a random value between -1 and 1.
 		 *
-		 * @return Random value.
+		 * @return number Random value.
 		 */
 		randomClamped: function () {
 			return Math.random() * 2 - 1;
@@ -45,22 +44,22 @@ var Neuroevolution = function (options) {
 		scoreSort: -1, // Sort order (-1 = desc, 1 = asc).
 		nbChild: 1 // Number of children by breeding.
 
-	}
+	};
 
 	/**
 	 * Override default options.
 	 *
-	 * @param {options} An object of Neuroevolution options.
+	 * @param options An object of Neuroevolution options.
 	 * @return void
 	 */
 	self.set = function (options) {
 		for (var i in options) {
-			if (this.options[i] != undefined) { // Only override if the passed in value
+			if (this.options[i] !== undefined) { // Only override if the passed in value
 				// is actually defined.
 				self.options[i] = options[i];
 			}
 		}
-	}
+	};
 
 	// Overriding default options with the pass in options
 	self.set(options);
@@ -75,12 +74,12 @@ var Neuroevolution = function (options) {
 	var Neuron = function () {
 		this.value = 0;
 		this.weights = [];
-	}
+	};
 
 	/**
 	 * Initialize number of neuron weights to random clamped values.
 	 *
-	 * @param {nb} Number of neuron weights (number of inputs).
+	 * @param nb Number of neuron weights (number of inputs).
 	 * @return void
 	 */
 	Neuron.prototype.populate = function (nb) {
@@ -88,7 +87,7 @@ var Neuroevolution = function (options) {
 		for (var i = 0; i < nb; i++) {
 			this.weights.push(self.options.randomClamped());
 		}
-	}
+	};
 
 
 	/*LAYER***********************************************************************/
@@ -96,12 +95,11 @@ var Neuroevolution = function (options) {
 	 * Neural Network Layer class.
 	 *
 	 * @constructor
-	 * @param {index} Index of this Layer in the Network.
+	 * @param index Index of this Layer in the Network.
 	 */
-	var Layer = function (index) {
-		this.id = index || 0;
-		this.neurons = [];
-	}
+	var Layer = function () {
+        this.neurons = [];
+	};
 
 	/**
 	 * Populate the Layer with a set of randomly weighted Neurons.
@@ -120,7 +118,7 @@ var Neuroevolution = function (options) {
 			n.populate(nbInputs);
 			this.neurons.push(n);
 		}
-	}
+	};
 
 
 	/*NEURAL NETWORK**************************************************************/
@@ -133,80 +131,78 @@ var Neuroevolution = function (options) {
 	 */
 	var Network = function () {
 		this.layers = [];
-	}
+	};
 
 	/**
 	 * Generate the Network layers.
 	 *
-	 * @param {input} Number of Neurons in Input layer.
-	 * @param {hidden} Number of Neurons per Hidden layer.
-	 * @param {output} Number of Neurons in Output layer.
+	 * @param input Number of Neurons in Input layer.
+	 * @param hiddens Number of Neurons per Hidden layer.
+	 * @param output Number of Neurons in Output layer.
 	 * @return void
 	 */
 	Network.prototype.perceptronGeneration = function (input, hiddens, output) {
-		var index = 0;
 		var previousNeurons = 0;
-		var layer = new Layer(index);
+
+		var layer = new Layer();
 		layer.populate(input, previousNeurons); // Number of Inputs will be set to
 		// 0 since it is an input layer.
 		previousNeurons = input; // number of input is size of previous layer.
 		this.layers.push(layer);
-		index++;
 		for (var i in hiddens) {
 			// Repeat same process as first layer for each hidden layer.
-			var layer = new Layer(index);
+			var layer = new Layer();
 			layer.populate(hiddens[i], previousNeurons);
 			previousNeurons = hiddens[i];
 			this.layers.push(layer);
-			index++;
 		}
-		var layer = new Layer(index);
+		var layer = new Layer();
 		layer.populate(output, previousNeurons); // Number of input is equal to
 		// the size of the last hidden
 		// layer.
 		this.layers.push(layer);
-	}
+	};
 
 	/**
 	 * Create a copy of the Network (neurons and weights).
 	 *
 	 * Returns number of neurons per layer and a flat array of all weights.
 	 *
-	 * @return Network data.
+	 * @return {neurons: Array, weights: Array} data.
 	 */
 	Network.prototype.getSave = function () {
-		var datas = {
+		var data = {
 			neurons: [], // Number of Neurons per layer.
 			weights: [] // Weights of each Neuron's inputs.
 		};
 
 		for (var i in this.layers) {
-			datas.neurons.push(this.layers[i].neurons.length);
+			data.neurons.push(this.layers[i].neurons.length);
 			for (var j in this.layers[i].neurons) {
 				for (var k in this.layers[i].neurons[j].weights) {
 					// push all input weights of each Neuron of each Layer into a flat
 					// array.
-					datas.weights.push(this.layers[i].neurons[j].weights[k]);
+					data.weights.push(this.layers[i].neurons[j].weights[k]);
 				}
 			}
 		}
-		return datas;
-	}
+
+		return data;
+	};
 
 	/**
 	 * Apply network data (neurons and weights).
 	 *
-	 * @param {save} Copy of network data (neurons and weights).
+	 * @param save Copy of network data (neurons and weights).
 	 * @return void
 	 */
 	Network.prototype.setSave = function (save) {
 		var previousNeurons = 0;
-		var index = 0;
 		var indexWeights = 0;
 		this.layers = [];
 		for (var i in save.neurons) {
 			// Create and populate layers.
-			var layer = new Layer(index);
+			var layer = new Layer();
 			layer.populate(save.neurons[i], previousNeurons);
 			for (var j in layer.neurons) {
 				for (var k in layer.neurons[j].weights) {
@@ -217,7 +213,6 @@ var Neuroevolution = function (options) {
 				}
 			}
 			previousNeurons = save.neurons[i];
-			index++;
 			this.layers.push(layer);
 		}
 	}
@@ -404,7 +399,7 @@ var Neuroevolution = function (options) {
 				max = 0;
 			}
 		}
-	}
+	};
 
 
 	/*GENERATIONS*****************************************************************/
@@ -417,20 +412,14 @@ var Neuroevolution = function (options) {
 	 */
 	var Generations = function () {
 		this.generations = [];
-		var currentGeneration = new Generation();
-	}
+	};
 
-	/**
-	 * Create the first generation.
-	 *
-	 * @param {input} Input layer.
-	 * @param {input} Hidden layer(s).
-	 * @param {output} Output layer.
-	 * @return First Generation.
-	 */
-	Generations.prototype.firstGeneration = function (input, hiddens, output) {
-		// FIXME input, hiddens, output unused.
-
+    /**
+     * Create the first generation.
+     *
+     * @return Array First Generation.
+     */
+	Generations.prototype.firstGeneration = function () {
 		var out = [];
 		for (var i = 0; i < self.options.population; i++) {
 			// Generate the Network and save it.
@@ -442,8 +431,9 @@ var Neuroevolution = function (options) {
 		}
 
 		this.generations.push(new Generation());
+
 		return out;
-	}
+	};
 
 	/**
 	 * Create the next Generation.
@@ -451,30 +441,31 @@ var Neuroevolution = function (options) {
 	 * @return Next Generation.
 	 */
 	Generations.prototype.nextGeneration = function () {
-		if (this.generations.length == 0) {
-			// Need to create first generation.
-			return false;
+		if (this.generations.length === 0) {
+			// Need to create first generation not a next generation.
+			return null;
 		}
 
 		var gen = this.generations[this.generations.length - 1]
 			.generateNextGeneration();
 		this.generations.push(new Generation());
+
 		return gen;
-	}
+	};
 
 	/**
 	 * Add a genome to the Generations.
 	 *
-	 * @param {genome}
+	 * @param genome
 	 * @return False if no Generations to add to.
 	 */
 	Generations.prototype.addGenome = function (genome) {
 		// Can't add to a Generation if there are no Generations.
-		if (this.generations.length == 0) return false;
+		if (this.generations.length === 0) return null;
 
 		// FIXME addGenome returns void.
 		return this.generations[this.generations.length - 1].addGenome(genome);
-	}
+	};
 
 
 	/*SELF************************************************************************/
@@ -487,7 +478,7 @@ var Neuroevolution = function (options) {
 	 */
 	self.restart = function () {
 		self.generations = new Generations();
-	}
+	};
 
 	/**
 	 * Create the next generation.
@@ -497,7 +488,7 @@ var Neuroevolution = function (options) {
 	self.nextGeneration = function () {
 		var networks = [];
 
-		if (self.generations.generations.length == 0) {
+		if (self.generations.generations.length === 0) {
 			// If no Generations, create first.
 			networks = self.generations.firstGeneration();
 		} else {
@@ -526,7 +517,7 @@ var Neuroevolution = function (options) {
 			}
 		}
 
-		if (self.options.historic != -1) {
+		if (self.options.historic !== -1) {
 			// Remove older generations.
 			if (self.generations.generations.length > self.options.historic + 1) {
 				self.generations.generations.splice(0,
@@ -535,16 +526,16 @@ var Neuroevolution = function (options) {
 		}
 
 		return nns;
-	}
+	};
 
 	/**
 	 * Adds a new Genome with specified Neural Network and score.
 	 *
-	 * @param {network} Neural Network.
-	 * @param {score} Score value.
+	 * @param network Neural Network.
+	 * @param score Score value.
 	 * @return void.
 	 */
 	self.networkScore = function (network, score) {
 		self.generations.addGenome(new Genome(score, network.getSave()));
 	}
-}
+};
