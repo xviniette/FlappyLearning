@@ -16,6 +16,10 @@
  */
 
 class Network {
+    /**
+     * @constructor
+     * @param geneticDeep main object class used to access the options
+     */
     constructor(geneticDeep) {
         this.geneticDeep = geneticDeep;
         this.layers = [];
@@ -48,7 +52,7 @@ class Network {
      * @returns {*}
      */
     addLayer(nbNeurons, nbInputsOnEachNeuron) {
-        var layer = new Network.Layer();
+        const layer = new Network.Layer();
         layer.populate(nbNeurons, nbInputsOnEachNeuron, this.geneticDeep.options.randomClamped);
 
         this.layers.push(layer);
@@ -64,21 +68,21 @@ class Network {
      */
     compute(inputs) {
         if (this.layers.length > 0) {
-            var inputLayer = this.layers[0];
+            const inputLayer = this.layers[0];
 
             //set input values inside neurons of the input layer
-            for (var i = 0; i < inputs.length && i < inputLayer.neurons.length; i++) {
+            for (let i = 0; i < inputs.length && i < inputLayer.neurons.length; i++) {
                 inputLayer.neurons[i].value = inputs[i];
             }
 
-            var prevLayer = inputLayer; // Previous layer is input layer.
-            var sum;
+            let prevLayer = inputLayer; // Previous layer is input layer.
+            let sum;
 
-            for (var x = 1; x < this.layers.length; x++) { //exploring hidden and output layers (which have connections)
-                for (var y = 0; y < this.layers[x].neurons.length; y++) { //exploring neurons of each layer
+            for (let x = 1; x < this.layers.length; x++) { //exploring hidden and output layers (which have connections)
+                for (let y = 0; y < this.layers[x].neurons.length; y++) { //exploring neurons of each layer
                     sum = 0; //we make the sum of the product input and weight which will be the neuron value
 
-                    for (var z = 0; z < prevLayer.neurons.length; z++) {
+                    for (let z = 0; z < prevLayer.neurons.length; z++) {
                         // Every Neuron in the previous layer is an input to each Neuron in
                         // the next layer, we make the product of the input value and the weight in that input
                         sum += prevLayer.neurons[z].value * this.layers[x].neurons[y].weights[z];
@@ -92,14 +96,12 @@ class Network {
             }
 
             // All outputs of the Network.
-            var out = [];
-            var lastLayer = this.layers[this.layers.length - 1];
+            const out = [];
+            const lastLayer = this.layers[this.layers.length - 1];
 
-            for (var j = 0; j < lastLayer.neurons.length; j++) {
+            for (let j = 0; j < lastLayer.neurons.length; j++) {
                 out.push(lastLayer.neurons[j].value);
             }
-
-            //console.log('out', out);
 
             return out;
         }
@@ -134,6 +136,9 @@ class Network {
  * Neural Network Layer class.
  */
 Network.Layer = class {
+    /**
+     * @constructor
+     */
     constructor() {
         this.neurons = [];
     }
@@ -151,9 +156,11 @@ Network.Layer = class {
      */
     populate(nbNeurons, nbInputs, randomMethod) {
         this.neurons = [];
-        for (var i = 0; i < nbNeurons; i++) {
-            var n = new Network.Layer.Neuron();
+
+        for (let i = 0; i < nbNeurons; i++) {
+            const n = new Network.Layer.Neuron();
             n.populate(nbInputs, randomMethod);
+
             this.neurons.push(n);
         }
     };
@@ -164,6 +171,9 @@ Network.Layer = class {
  * Artificial Neuron class
  */
 Network.Layer.Neuron = class {
+    /**
+     * @constructor
+     */
     constructor() {
         this.value = 0; //computed value when input values on compute method from Network class
         this.weights = []; //size depends on connected inputs on the neuron
@@ -178,69 +188,6 @@ Network.Layer.Neuron = class {
      */
     populate(nb, randomMethod) {
         this.weights = [];
-        for (var i = 0; i < nb; i++) {
-            //console.log(Math.random() * 2 - 1);
-            this.weights.push(randomMethod()/*Math.random() * 2 - 1*/);
-        }
+        for (let i = 0; i < nb; i++) this.weights.push(randomMethod());
     };
 };
-
-//TODO: remove following methods (setSave/getSave)
-
-/**
- * Create a copy of the Network (neurons and weights).
- *
- * Returns number of neurons per layer and a flat array of all weights.
- *
- * @return {neurons: Array, weights: Array} data.
- */
-/*
-Network.prototype.getSave = function () {
-    var data = {
-        neurons: [], // Number of Neurons per layer.
-        weights: [] // Weights of each Neuron's inputs.
-    };
-
-    for (var i in this.layers) {
-        data.neurons.push(this.layers[i].neurons.length);
-        for (var j in this.layers[i].neurons) {
-            for (var k in this.layers[i].neurons[j].weights) {
-                // push all input weights of each Neuron of each Layer into a flat
-                // array.
-                data.weights.push(this.layers[i].neurons[j].weights[k]);
-            }
-        }
-    }
-
-    return data;
-};
-*/
-
-/**
- * Apply network data (neurons and weights).
- *
- * @param save Copy of network data (neurons and weights).
- * @return void
- */
-/*
-Network.prototype.setSave = function (save) {
-    var previousNeurons = 0;
-    var indexWeights = 0;
-    this.layers = [];
-    for (var i in save.neurons) {
-        // Create and populate layers.
-        var layer = new Layer();
-        layer.populate(save.neurons[i], previousNeurons);
-        for (var j in layer.neurons) {
-            for (var k in layer.neurons[j].weights) {
-                // Apply neurons weights to each Neuron.
-                layer.neurons[j].weights[k] = save.weights[indexWeights];
-
-                indexWeights++; // Increment index of flat array.
-            }
-        }
-        previousNeurons = save.neurons[i];
-        this.layers.push(layer);
-    }
-}
-*/

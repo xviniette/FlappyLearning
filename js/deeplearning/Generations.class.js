@@ -15,7 +15,7 @@ class Generations {
      * @returns Array
      */
     createGeneration() {
-        var out;
+        let out;
 
         if (this.generations.length > 0) {
             //based on previous generations
@@ -25,16 +25,14 @@ class Generations {
             //generate all from scratch
             out = [];
 
-            for (var i = 0; i < this.geneticDeep.options.population; i++) {
+            for (let i = 0; i < this.geneticDeep.options.population; i++) {
                 // Generate the Network and save it in array.
-                var network = new Network(this.geneticDeep).perceptronGeneration(
+                const network = new Network(this.geneticDeep).perceptronGeneration(
                     this.geneticDeep.options.network[0],
                     this.geneticDeep.options.network[1],
                     this.geneticDeep.options.network[2]);
 
                 out.push(network);
-
-                //console.log(i, out[i].layers[0].neurons[0]);
             }
         }
 
@@ -59,7 +57,7 @@ class Generations {
      * @return void
      */
     addGenome(score, network) {
-        var currentGeneration = this.getCurrentGeneration();
+        const currentGeneration = this.getCurrentGeneration();
         if (currentGeneration !== null) currentGeneration.addGenome(new Generations.Generation.Genome(score, network));
     };
 }
@@ -84,7 +82,9 @@ Generations.Generation = class {
     addGenome(genome) {
         // Locate position to insert Genome into.
         // The gnomes should remain sorted.
-        for (var i = 0; i < this.genomes.length; i++) {
+        let i = 0;
+
+        for (; i < this.genomes.length; i++) {
             // Sort in descending order.
             if (this.geneticDeep.options.scoreSort < 0) {
                 if (genome.score > this.genomes[i].score) {
