@@ -363,7 +363,7 @@ var Neuroevolution = function (options) {
 		for (var i = 0; i < Math.round(self.options.elitism *
 				self.options.population); i++) {
 			if (nexts.length < self.options.population) {
-				// Push a deep copy of ith Genome's Nethwork.
+				// Push a deep copy of ith Genome's Network.
 				nexts.push(JSON.parse(JSON.stringify(this.genomes[i].network)));
 			}
 		}
