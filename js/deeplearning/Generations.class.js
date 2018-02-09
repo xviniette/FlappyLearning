@@ -5,6 +5,10 @@
  * Hold's previous Generations and current Generation.
  */
 class Generations {
+    /**
+     * @constructor
+     * @param geneticDeep main class object used to access the options
+     */
     constructor(geneticDeep) {
         this.geneticDeep = geneticDeep;
         this.generations = [];
@@ -103,8 +107,6 @@ Generations.Generation = class {
         this.genomes.splice(i, 0, genome);
     };
 
-    //TODO: understand and correct methods
-
     /**
      * Breed to genomes to produce offspring(s).
      *
@@ -113,29 +115,25 @@ Generations.Generation = class {
      * @param nbChildren Number of offspring (children).
      */
     breed(g1, g2, nbChildren) {
-        var datas = [];
-        for (var nb = 0; nb < nbChildren; nb++) {
-            // Deep clone of genome 1.
-            var data = g1.clone();
+        const networks = [];
+        let k, l, m;
 
-            //console.log('data', data);
+        for (let nb = 0; nb < nbChildren; nb++) {
+            const data = g1.clone();
 
-            for (var k = 0; k < g2.layers.length; k++) {
-                for (var l = 0; l < g2.layers[k].neurons.length; l++) {
-                    for (var m = 0; m < g2.layers[k].neurons[l].weights.length; m++) {
-                        // Genetic crossover
-                        // 0.5 is the crossover factor.
-                        // FIXME Really should be a predefined constant.
-                        if (Math.random() <= 0.5) {
+            for (k = 0; k < g2.layers.length; k++) {
+                for (l = 0; l < g2.layers[k].neurons.length; l++) {
+                    for (m = 0; m < g2.layers[k].neurons[l].weights.length; m++) {
+                        if (Math.random() <= this.geneticDeep.options.crossOverFactor) {
                             data.layers[k].neurons[l].weights[m] = g2.layers[k].neurons[l].weights[m];
                         }
                     }
                 }
             }
 
-            for (var k = 0; k < g2.layers.length; k++) {
-                for (var l = 0; l < g2.layers[k].neurons.length; l++) {
-                    for (var m = 0; m < g2.layers[k].neurons[l].weights.length; m++) {
+            for (k = 0; k < g2.layers.length; k++) {
+                for (l = 0; l < g2.layers[k].neurons.length; l++) {
+                    for (m = 0; m < g2.layers[k].neurons[l].weights.length; m++) {
                         if (Math.random() <= this.geneticDeep.options.mutationRate) {
                             data.layers[k].neurons[l].weights[m] += Math.random() *
                                 this.geneticDeep.options.mutationRange *
@@ -146,32 +144,10 @@ Generations.Generation = class {
                 }
             }
 
-            /*
-            for (var i in g2.network.weights) {
-                // Genetic crossover
-                // 0.5 is the crossover factor.
-                // FIXME Really should be a predefined constant.
-                if (Math.random() <= 0.5) {
-                    data.network.weights[i] = g2.network.weights[i];
-                }
-            }
-
-            // Perform mutation on some weights.
-            for (var i in data.network.weights) {
-                if (Math.random() <= this.geneticDeep.options.mutationRate) {
-                    data.network.weights[i] += Math.random() *
-                        this.geneticDeep.options.mutationRange *
-                        2 -
-                        this.geneticDeep.options.mutationRange;
-                }
-            }
-            */
-            datas.push(data);
+            networks.push(data);
         }
 
-        //console.log('final data', datas);
-
-        return datas;
+        return networks;
     };
 
     /**
@@ -180,10 +156,11 @@ Generations.Generation = class {
      * @return Array Next generation data array.
      */
     generateNextGeneration() {
-        var networks = [];
+        const networks = [];
+        let i;
 
         //elitism method: the best are saved for the next generation
-        for (var i = 0; i < Math.round(this.geneticDeep.options.elitism * this.geneticDeep.options.population); i++) {
+        for (i = 0; i < Math.round(this.geneticDeep.options.elitism * this.geneticDeep.options.population); i++) {
             if (networks.length < this.geneticDeep.options.population) {
                 // Push a deep copy of ith Genome's Network, add a new network with same weights
                 networks.push(this.genomes[i].network.clone());
@@ -193,13 +170,13 @@ Generations.Generation = class {
         //console.log('1 networks', networks.length);
 
         //random method: from the first network are generated random weights
-        for (var i = 0; i < Math.round(this.geneticDeep.options.randomBehaviour *
+        for (i = 0; i < Math.round(this.geneticDeep.options.randomBehaviour *
             this.geneticDeep.options.population); i++) {
-            var network = this.genomes[0].network.clone();
+            const network = this.genomes[0].network.clone();
 
-            for (var k = 0; k < network.layers.length; k++) {
-                for (var l = 0; l < network.layers[k].neurons.length; l++) {
-                    for (var m = 0; m < network.layers[k].neurons[l].weights.length; m++) {
+            for (let k = 0; k < network.layers.length; k++) {
+                for (let l = 0; l < network.layers[k].neurons.length; l++) {
+                    for (let m = 0; m < network.layers[k].neurons[l].weights.length; m++) {
                         network.layers[k].neurons[l].weights[m] = this.geneticDeep.options.randomClamped();
                     }
                 }
@@ -210,16 +187,15 @@ Generations.Generation = class {
             }
         }
 
-        //console.log('2 networks', networks.length);
+        let max = 0;
 
-        var max = 0;
         while (true) {
-            for (var i = 0; i < max; i++) {
+            for (i = 0; i < max; i++) {
                 // Create the children and push them to the nexts array.
-                var children = this.breed(this.genomes[i].network, this.genomes[max].network,
+                const children = this.breed(this.genomes[i].network, this.genomes[max].network,
                     (this.geneticDeep.options.nbChild > 0 ? this.geneticDeep.options.nbChild : 1));
 
-                for (var c = 0; c < children.length; c++) {
+                for (let c = 0; c < children.length; c++) {
                     networks.push(children[c]);
 
                     if (networks.length >= this.geneticDeep.options.population) {
@@ -229,7 +205,9 @@ Generations.Generation = class {
                     }
                 }
             }
+
             max++;
+
             if (max >= this.genomes.length - 1) {
                 max = 0;
             }

@@ -42,7 +42,8 @@ class GeneticDeep {
             historic: 0, // Latest generations saved.
             lowHistoric: false, // Only save score (not the network).
             scoreSort: -1, // Sort order (-1 = desc, 1 = asc).
-            nbChild: 1 // Number of children by breeding.
+            nbChild: 1, // Number of children by breeding.
+            crossOverFactor: 0.5 // cross over factor for genetic algorithm (probability between 0 and 1)
         };
 
         this.setOptions(options);
