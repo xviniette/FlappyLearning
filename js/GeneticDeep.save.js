@@ -43,7 +43,7 @@ class GeneticDeep {
             lowHistoric: false, // Only save score (not the network).
             scoreSort: -1, // Sort order (-1 = desc, 1 = asc).
             nbChild: 1, // Number of children by breeding.
-            crossOverFactor: 0.5 // breed factor for genetic algorithm (0 < f < 1)
+            crossOverFactor: 0.5 // cross over factor for genetic algorithm (probability between 0 and 1)
         };
 
         this.setOptions(options);
@@ -57,11 +57,10 @@ class GeneticDeep {
      * @return void
      */
     setOptions(options) {
-        let keys = Object.keys(options);
-
-        for (let i = 0; i < keys.length; i++) {
-            if (this.options.hasOwnProperty(keys[i])) { // Only override if the passed in value is actually defined.
-                this.options[keys[i]] = options[keys[i]];
+        for (let i = 0; i < options.length; i++) {
+            if (this.options[i] !== undefined) { // Only override if the passed in value
+                // is actually defined.
+                this.options[i] = options[i];
             }
         }
     };
