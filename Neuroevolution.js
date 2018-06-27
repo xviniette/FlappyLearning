@@ -16,7 +16,7 @@ var Neuroevolution = function (options) {
 		 * @return Logistic function output.
 		 */
 		activation: function (a) {
-			ap = (-a) / 1;
+			var ap = (-a) / 1;
 			return (1 / (1 + Math.exp(ap)))
 		},
 
