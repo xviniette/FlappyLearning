@@ -39,14 +39,15 @@ var loadImages = function(sources, callback){
 	var imgs = {};
 	for(var i in sources){
 		nb++;
-		imgs[i] = new Image();
-		imgs[i].src = sources[i];
-		imgs[i].onload = function(){
+		var img = new Image();
+		img.src = sources[i];
+		img.onload = function(){
 			loaded++;
 			if(loaded == nb){
 				callback(imgs);
 			}
 		}
+		imgs[i] = img;
 	}
 }
 
@@ -84,15 +85,16 @@ Bird.prototype.isDead = function(height, pipes){
 		return true;
 	}
 	for(var i in pipes){
+		var ipipe = pipes[i];
 		if(!(
-			this.x > pipes[i].x + pipes[i].width ||
-			this.x + this.width < pipes[i].x || 
-			this.y > pipes[i].y + pipes[i].height ||
-			this.y + this.height < pipes[i].y
+			this.x > ipipe.x + ipipe.width ||
+			this.x + this.width < ipipe.x || 
+			this.y > ipipe.y + ipipe.height ||
+			this.y + this.height < ipipe.y
 			)){
 			return true;
+		}
 	}
-}
 }
 
 var Pipe = function(json){
@@ -158,30 +160,33 @@ Game.prototype.update = function(){
 	this.backgroundx += this.backgroundSpeed;
 	var nextHoll = 0;
 	if(this.birds.length > 0){
-		for(var i = 0; i < this.pipes.length; i+=2){
-			if(this.pipes[i].x + this.pipes[i].width > this.birds[0].x){
-				nextHoll = this.pipes[i].height/this.height;
+		var bird0_x = this.birds[0].x;
+		for(var i = 0, len = this.pipes.length; i < len; i+=2){
+			var ipipe = this.pipes[i];
+			if(ipipe.x + ipipe.width > bird0_x){
+				nextHoll = ipipe.height/this.height;
 				break;
 			}
 		}
 	}
 
 	for(var i in this.birds){
-		if(this.birds[i].alive){
+		var ibird = this.birds[i];
+		if(ibird.alive){
 
 			var inputs = [
-			this.birds[i].y / this.height,
+			ibird.y / this.height,
 			nextHoll
 			];
 
 			var res = this.gen[i].compute(inputs);
 			if(res > 0.5){
-				this.birds[i].flap();
+				ibird.flap();
 			}
 
-			this.birds[i].update();
-			if(this.birds[i].isDead(this.height, this.pipes)){
-				this.birds[i].alive = false;
+			ibird.update();
+			if(ibird.isDead(this.height, this.pipes)){
+				ibird.alive = false;
 				this.alives--;
 				//console.log(this.alives);
 				Neuvol.networkScore(this.gen[i], this.score);
@@ -193,8 +198,9 @@ Game.prototype.update = function(){
 	}
 
 	for(var i = 0; i < this.pipes.length; i++){
-		this.pipes[i].update();
-		if(this.pipes[i].isOut()){
+		var ipipe = this.pipes[i];
+		ipipe.update();
+		if(ipipe.isOut()){
 			this.pipes.splice(i, 1);
 			i--;
 		}
@@ -240,26 +246,31 @@ Game.prototype.isItEnd = function(){
 
 Game.prototype.display = function(){
 	this.ctx.clearRect(0, 0, this.width, this.height);
-	for(var i = 0; i < Math.ceil(this.width / images.background.width) + 1; i++){
-		this.ctx.drawImage(images.background, i * images.background.width - Math.floor(this.backgroundx%images.background.width), 0)
+	var imgbg = images.background;
+	var mfb = Math.floor(this.backgroundx%imgbg.width);
+	for(var i = 0, len = Math.ceil(this.width / imgbg.width) + 1; i < len; i++){
+		this.ctx.drawImage(imgbg, i * imgbg.width - mfb, 0);
 	}
 
+	var imgs_ph = images.pipetop.height;
 	for(var i in this.pipes){
+		var ipipe = this.pipes[i];
 		if(i%2 == 0){
-			this.ctx.drawImage(images.pipetop, this.pipes[i].x, this.pipes[i].y + this.pipes[i].height - images.pipetop.height, this.pipes[i].width, images.pipetop.height);
+			this.ctx.drawImage(images.pipetop, ipipe.x, ipipe.y + ipipe.height - imgs_ph, ipipe.width, imgs_ph);
 		}else{
-			this.ctx.drawImage(images.pipebottom, this.pipes[i].x, this.pipes[i].y, this.pipes[i].width, images.pipetop.height);
+			this.ctx.drawImage(images.pipebottom, ipipe.x, ipipe.y, ipipe.width, imgs_ph);
 		}
 	}
 
 	this.ctx.fillStyle = "#FFC600";
 	this.ctx.strokeStyle = "#CE9E00";
 	for(var i in this.birds){
-		if(this.birds[i].alive){
+		var ibird = this.birds[i];
+		if(ibird.alive){
 			this.ctx.save(); 
-			this.ctx.translate(this.birds[i].x + this.birds[i].width/2, this.birds[i].y + this.birds[i].height/2);
-			this.ctx.rotate(Math.PI/2 * this.birds[i].gravity/20);
-			this.ctx.drawImage(images.bird, -this.birds[i].width/2, -this.birds[i].height/2, this.birds[i].width, this.birds[i].height);
+			this.ctx.translate(ibird.x + ibird.width/2, ibird.y + ibird.height/2);
+			this.ctx.rotate(Math.PI/2 * ibird.gravity/20);
+			this.ctx.drawImage(images.bird, -ibird.width/2, -ibird.height/2, ibird.width, ibird.height);
 			this.ctx.restore();
 		}
 	}
