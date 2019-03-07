@@ -548,3 +548,4 @@ var Neuroevolution = function (options) {
 		self.generations.addGenome(new Genome(score, network.getSave()));
 	}
 }
+

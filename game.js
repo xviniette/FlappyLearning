@@ -137,13 +137,29 @@ var Game = function(){
 	this.backgroundSpeed = 0.5;
 	this.backgroundx = 0;
 	this.maxScore = 0;
+	this.myMaxScore=0;
+	this.myScore=0;
 }
-
 Game.prototype.start = function(){
+	if(this.generation!=0){
+		var table = document.getElementById("genscore");
+	    var row = table.insertRow(this.generation);
+	    var cell1 = row.insertCell(0);
+	    var cell2 = row.insertCell(1);
+	    var cell3 = row.insertCell(2);
+	    cell1.style.textAlign = "center";
+	    cell2.style.textAlign = "center";
+	    cell3.style.textAlign = "center";
+	    cell1.innerHTML = this.generation;
+	    cell2.innerHTML = this.myScore;
+	    cell3.innerHTML = this.score;
+	}
 	this.interval = 0;
 	this.score = 0;
+	this.myScore=0;
 	this.pipes = [];
 	this.birds = [];
+	this.flag=false;
 
 	this.gen = Neuvol.nextGeneration();
 	for(var i in this.gen){
@@ -211,10 +227,17 @@ Game.prototype.update = function(){
 	this.interval++;
 	if(this.interval == this.spawnInterval){
 		this.interval = 0;
+		if(this.flag){
+			this.myScore++;
+		}
+		else{
+			this.flag=true;
+		}
 	}
 
 	this.score++;
 	this.maxScore = (this.score > this.maxScore) ? this.score : this.maxScore;
+	this.myMaxScore = (this.myScore > this.myMaxScore) ? this.myScore : this.myMaxScore;
 	var self = this;
 
 	if(FPS == 0){
@@ -264,12 +287,23 @@ Game.prototype.display = function(){
 		}
 	}
 
-	this.ctx.fillStyle = "white";
+	this.ctx.fillStyle = "black";
 	this.ctx.font="20px Oswald, sans-serif";
-	this.ctx.fillText("Score : "+ this.score, 10, 25);
-	this.ctx.fillText("Max Score : "+this.maxScore, 10, 50);
-	this.ctx.fillText("Generation : "+this.generation, 10, 75);
-	this.ctx.fillText("Alive : "+this.alives+" / "+Neuvol.options.population, 10, 100);
+	/*
+	this.ctx.fillText("Score : "+ this.myScore, 10, 25);
+	this.ctx.fillText("Max Score : "+this.myMaxScore, 10, 50);
+	this.ctx.fillText("Distance : "+ this.score, 10, 75);
+	this.ctx.fillText("Max Distance : "+this.maxScore, 10, 100);
+	this.ctx.fillText("Generation : "+this.generation, 10, 125);
+	this.ctx.fillText("Alive : "+this.alives+" / "+Neuvol.options.population, 10, 150);
+	*/
+
+	document.getElementById("p_score").innerHTML="Score : "+this.myScore;
+	document.getElementById("p_maxscore").innerHTML="Max Score : "+this.myMaxScore;
+	document.getElementById("p_distance").innerHTML="Distance : "+this.score;
+	document.getElementById("p_maxdistance").innerHTML="Max Distance : "+this.maxScore;
+	document.getElementById("p_gen").innerHTML="Generation : "+this.generation;
+	document.getElementById("p_alive").innerHTML="Alive : "+this.alives+"/"+Neuvol.options.population;
 
 	var self = this;
 	requestAnimationFrame(function(){
@@ -278,6 +312,17 @@ Game.prototype.display = function(){
 }
 
 window.onload = function(){
+	var c = document.getElementById("flappy");
+	var ctx = c.getContext("2d");
+	ctx.font = "30px Arial";
+	ctx.strokeText("Click here to start", 130, 256);
+	document.getElementById("Button").disabled = true;
+	document.getElementById("x1").disabled = true;
+	document.getElementById("x2").disabled = true;
+	document.getElementById("x3").disabled = true;
+	document.getElementById("x5").disabled = true;
+	document.getElementById("MAX").disabled = true;
+	document.getElementById("cui").disabled = true;
 	var sprites = {
 		bird:"./img/bird.png",
 		background:"./img/background.png",
@@ -299,7 +344,66 @@ window.onload = function(){
 
 	loadImages(sprites, function(imgs){
 		images = imgs;
-		start();
+		//start();
 	})
-
+}
+var isStarted = false;
+var mygamestart = function(){
+	if(!isStarted){
+		Neuvol = new Neuroevolution({
+			population:50,
+			network:[2, [2], 1],
+		});
+		game = new Game();
+		game.start();
+		game.update();
+		game.display();
+		isStarted = true;
+		document.getElementById("Button").disabled = false;
+		document.getElementById("x1").disabled = false;
+		document.getElementById("x2").disabled = false;
+		document.getElementById("x3").disabled = false;
+		document.getElementById("x5").disabled = false;
+		document.getElementById("MAX").disabled = false;
+		document.getElementById("cui").disabled = false;
+	}
+}
+var restart = function(){
+	var table = document.getElementById("genscore");
+    var rowCount = table.rows.length;
+    while(rowCount>1){
+    	rowCount--;
+    	table.deleteRow(rowCount);
+    }
+	Neuvol = new Neuroevolution({
+		population:50,
+		network:[2, [2], 1],
+	});
+	game = new Game();
+	game.start();
+	game.update();
+	game.display();
+	speed(60);
+	isStarted = true;
+}
+var isBW = true;
+var changeUI = function(){
+	var ref;
+	if(isBW){
+		isBW = false;
+		ref="img1"
+	}
+	else{
+		isBW = true;
+		ref="img"
+	}
+	var sprites = {
+		bird:"./"+ref+"/bird.png",
+		background:"./"+ref+"/background.png",
+		pipetop:"./"+ref+"/pipetop.png",
+		pipebottom:"./"+ref+"/pipebottom.png"
+	}
+	loadImages(sprites, function(imgs){
+		images = imgs;
+	})
 }
