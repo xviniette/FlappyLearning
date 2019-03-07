@@ -1,18 +1,78 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>NeuroEvolution : Flappy Bird</title>
+	<link rel="shortcut icon" href="img/bird.png" />
+	<title>FlapAI Bird</title>
 	<link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+	<style>
+		canvas{border:2px solid #000000;}
+		.button {
+                background-color: black; /* Green */
+                border: none;
+                color: white;
+                padding: 8px 16px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 10px 2px;
+                -webkit-transition-duration: 0.4s; /* Safari */
+                transition-duration: 0.4s;
+                cursor: pointer;
+            }
+
+            .button1 {
+                background-color: white; 
+                color: black; 
+                border: 2px solid black;
+            }
+
+            .button1:hover {
+                background-color: black;
+                color: white;
+            }
+            p{
+            	font-family:Oswald;
+            }
+	</style>
 </head>
 <body>
-	<canvas id="flappy" width="500" height="512"></canvas> <br/>
-	<button onclick="speed(60)">x1</button> 
-	<button onclick="speed(120)">x2</button> 
-	<button onclick="speed(180)">x3</button> 
-	<button onclick="speed(300)">x5</button> 
-	<button onclick="speed(0)">MAX</button> 
-	<br/>
-	<a href="http://github.com/xviniette/FlappyLearning">GitHub Repository</a>
+	<center>
+		<h1 style="font-family:Oswald;">FlapAI Bird</h1>
+		<table border=0>
+			<tr>
+				<td align="center" width=500px style="vertical-align:top;">
+					<p id="p_score"></p>
+					<p id="p_maxscore"></p>
+					<p id="p_distance"></p>
+					<p id="p_maxdistance"></p>
+					<p id="p_gen"></p>
+					<p id="p_alive"></p>
+				</td>
+				<td width=600px style="vertical-align:top;" align="center">
+					<canvas id="flappy" width="500" height="512" onclick="mygamestart()"></canvas> <br/>
+					<button class="button button1" id="Button" onclick="restart()">Restart</button>
+					<button class="button button1" id="x1" onclick="speed(60)">x1</button> 
+					<button class="button button1" id="x2" onclick="speed(120)">x2</button> 
+					<button class="button button1" id="x3" onclick="speed(180)">x3</button> 
+					<button class="button button1" id="x5" onclick="speed(300)">x5</button> 
+					<button class="button button1" id="MAX" onclick="speed(0)">MAX</button>
+				    <button class="button button1" id="cui" onclick="changeUI()">Change UI</button>
+				</td>
+				<td width=500px style="vertical-align:top;">
+					<table id="genscore" border=0 style="font-family:Oswald;">
+						<tr>
+							<td vlaign="top" align="center" width=500px>Generation Number</td>
+							<td vlaign="top" align="center" width=500px>Score</td>
+							<td vlaign="top" align="center" width=500px>Distance</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>  
+		<br/>
+		<p id="temp"></p>
+	</center>
 	<script src = "Neuroevolution.js"></script>
 	<script src = "game.js"></script>
 </body>
