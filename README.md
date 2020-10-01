@@ -1,6 +1,6 @@
 # Flappy Learning ([Demo](http://xviniette.github.io/FlappyLearning/))
 
-Program that learns to play Flappy Bird by machine learning ([Neuroevolution](http://www.scholarpedia.org/article/Neuroevolution))
+Program that learns to play Flappy-Bird with the help of machine learning ([Neuroevolution](http://www.scholarpedia.org/article/Neuroevolution))
 
 ![alt tag](https://github.com/xviniette/FlappyLearning/blob/gh-pages/img/flappy.png?raw=true)
 
@@ -33,4 +33,4 @@ var generation = ne.nextGeneration();
 ne.networkScore(generation[x], <score = 0>);
 ```
 
-You can see the NeuroEvolution integration in Flappy Bird in [Game.js](http://github.com/xviniette/FlappyLearning/blob/gh-pages/game.js).
+You can see the NeuroEvolution integration in Flappy Bird on [Game.js](http://github.com/xviniette/FlappyLearning/blob/gh-pages/game.js).
