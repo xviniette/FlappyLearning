@@ -299,7 +299,7 @@ window.onload = function(){
 
 	loadImages(sprites, function(imgs){
 		images = imgs;
-		start();
+		();
 	})
 
 }
